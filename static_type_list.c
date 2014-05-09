@@ -10,7 +10,6 @@
 #include <assert.h> //assert, ...
 
 #include "utils.h"  //special types, ie) u32int, u8int
-#include "dynamic_type_list.h"  //list definitions
 #include "static_type_list.h"
 
 //all functions add a simple size check
@@ -19,7 +18,8 @@ bool static_type_list_push_front(list_t *self, void *elem, size_t size)
   if(!self || !self->reserve)
     return false;
 
-  assert(((static_list_reserve_t*)self->reserve)->element_sz == size);
+  assert(((static_list_reserve_t*)self->reserve)->element_sz == size &&
+    "Cannot insert an element that does not have a size equal to the others in the list");
 
   return list_push_front(self, elem, size);
 }
@@ -29,7 +29,8 @@ bool static_type_list_push_back(list_t *self, void *elem, size_t size)
   if(!self || !self->reserve)
     return false;
 
-  assert(((static_list_reserve_t*)self->reserve)->element_sz == size);
+  assert(((static_list_reserve_t*)self->reserve)->element_sz == size &&
+    "Cannot insert an element that does not have a size equal to the others in the list");
 
   return list_push_back(self, elem, size);
 }
@@ -39,9 +40,25 @@ bool static_type_list_insert(list_t *self, u32int index, void *elem, size_t size
   if(!self || !self->reserve)
     return false;
 
-  assert(((static_list_reserve_t*)self->reserve)->element_sz == size);
+  assert(((static_list_reserve_t*)self->reserve)->element_sz == size &&
+    "Cannot insert an element that does not have a size equal to the others in the list");
   
   return list_insert(self, index, elem, size);
+}
+
+bool static_type_list_clone(list_t *self, list_t *ret)
+{
+  //a bunch of sanity checks
+  // clone only if self and ret are static type lists and
+  // the size of the elements they hold is the same
+  if(!self || !self->reserve || 
+     !ret  || !ret->reserve  ||
+     self->reserve_sz != ret->reserve_sz ||
+     ((static_list_reserve_t*)self->reserve)->element_sz != ((static_list_reserve_t*)ret->reserve)->element_sz)
+    return false; //error
+
+  //if the sanity checks passed, clone like a normal list
+  return list_clone(self, ret);
 }
 
 void init_static_type_list_empty_head(list_t *list, size_t elem_sz)
@@ -71,7 +88,7 @@ void init_static_type_list_empty_head(list_t *list, size_t elem_sz)
   list->pop_back   = list_pop_back;
   list->at         = list_at;
   list->insert     = static_type_list_insert;
-  list->clone      = list_clone;
+  list->clone      = static_type_list_clone;
   list->free_all   = list_free_all;
 
   return;

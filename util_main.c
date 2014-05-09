@@ -9,7 +9,7 @@
 s32int main()
 {
   list_t list;
-  LIST_INIT(list);
+  STATIC_TYPE_LIST_INIT(list, u32int);
 
   //Test variables
   u32int test = 100, mid = 200, end = 300;
@@ -42,8 +42,10 @@ s32int main()
   }
 
   list_t copy_list;
-  LIST_INIT(copy_list);
+  STATIC_TYPE_LIST_INIT(copy_list, u16int);
   LIST_CLONE(list, copy_list);
+
+  //TODO add error() function
 
   printf("-----------------\n");
 
