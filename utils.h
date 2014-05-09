@@ -3,7 +3,12 @@
 #ifndef UTILS_H
 #define UTILS_H
 
-#include <stdbool.h>
+#include <stdbool.h> //bool type
+#include <assert.h> //assert, ...
+
+//error function
+#define error OutputFError
+bool OutputFError(const char *format, ...);
 
 typedef unsigned long long int uint64;
 typedef          long long int sint64;

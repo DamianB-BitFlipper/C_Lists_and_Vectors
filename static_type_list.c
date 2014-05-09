@@ -7,7 +7,6 @@
 
 #include <stdlib.h> //malloc, ...
 #include <string.h> //memcpy, ...
-#include <assert.h> //assert, ...
 
 #include "utils.h"  //special types, ie) u32int, u8int
 #include "static_type_list.h"
@@ -52,10 +51,16 @@ bool static_type_list_clone(list_t *self, list_t *ret)
   // clone only if self and ret are static type lists and
   // the size of the elements they hold is the same
   if(!self || !self->reserve || 
-     !ret  || !ret->reserve  ||
-     self->reserve_sz != ret->reserve_sz ||
-     ((static_list_reserve_t*)self->reserve)->element_sz != ((static_list_reserve_t*)ret->reserve)->element_sz)
-    return false; //error
+     !ret  || !ret->reserve)
+    return false;
+  
+  if(self->reserve_sz != ret->reserve_sz)
+    return error("Lists do not match self:%d != ret:%d\n", self->reserve_sz, ret->reserve_sz);
+  
+  if(((static_list_reserve_t*)self->reserve)->element_sz != ((static_list_reserve_t*)ret->reserve)->element_sz)
+    return error("List node size is not of same type (same size in bytes) self:%d != ret:%d\n", 
+                 ((static_list_reserve_t*)self->reserve)->element_sz, 
+                 ((static_list_reserve_t*)ret->reserve)->element_sz); 
 
   //if the sanity checks passed, clone like a normal list
   return list_clone(self, ret);
@@ -63,6 +68,10 @@ bool static_type_list_clone(list_t *self, list_t *ret)
 
 void init_static_type_list_empty_head(list_t *list, size_t elem_sz)
 {
+  //Sanity checks
+  if(!list)
+    return; //error
+
   //all values to be set to 0
   list->head = list->tail = 0;
   list->size = 0;

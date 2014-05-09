@@ -40,6 +40,10 @@ bool list_node_extract_container(list_node_t *node, void *outData, size_t *outSi
 void init_list_node(list_t *master, list_node_t *node, list_node_t *prev, 
                     list_node_t *next, void *elem, size_t size)
 {
+  //sanity check
+  if(!node) 
+    return; //error
+  
   //initialize
   node->master = master;
   node->prev = prev;
@@ -72,6 +76,10 @@ void init_list_node(list_t *master, list_node_t *node, list_node_t *prev,
 
 list_node_t *__list_get_node_at__(list_t *self, u32int index)
 {
+  //Sanity checks
+  if(!self)
+    return false; //error
+
   list_node_t *node;
   u32int i;
 
@@ -367,6 +375,10 @@ bool list_free_all(list_t *self)
 
 void init_list_empty_head(list_t *list)
 {
+  //Sanity checks
+  if(!list)
+    return; //error
+
   //all values to be set to 0
   list->head = list->tail = 0;
   list->size = 0;

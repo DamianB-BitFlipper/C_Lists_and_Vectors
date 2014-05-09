@@ -1,10 +1,11 @@
 #include <stdio.h>
 
 #include "utils.h"  //special types, ie) u32int, u8int
-#include "dynamic_type_list.h" //static list definitions
-#include "static_type_list.h" //static list definitions
+#include "dynamic_type_list.h" //dynamic list definitions
+#include "static_type_list.h"  //static list definitions
+#include "dynamic_vector.h"  //dynamic vector definitions
 
-//compile: gcc -o list_implementation dynamic_type_list.c static_type_list.c util_main.c -O3 -Wall -std=c99
+//compile: gcc -o list_implementation dynamic_type_list.c static_type_list.c util_main.c utils.c -O3 -Wall -std=c99
 
 s32int main()
 {
@@ -13,15 +14,6 @@ s32int main()
 
   //Test variables
   u32int test = 100, mid = 200, end = 300;
-
-  struct sTest_s
-  {
-    u32int test;
-    uint64 wow;
-    u32int to;
-  } sTest;
-
-  sTest.test = sTest.wow = sTest.to = 10;
   //Test variables
 
   LIST_PUSH_BACK(list, test);
@@ -42,10 +34,8 @@ s32int main()
   }
 
   list_t copy_list;
-  STATIC_TYPE_LIST_INIT(copy_list, u16int);
+  STATIC_TYPE_LIST_INIT(copy_list, u32int);
   LIST_CLONE(list, copy_list);
-
-  //TODO add error() function
 
   printf("-----------------\n");
 
@@ -55,14 +45,7 @@ s32int main()
     printf("Test %d\n", foreachTmp);
   }
 
-  /*u32int nice, in = 2;
-  LIST_AT(list, in, nice);
-  printf("At %d is %d size %d\n", in, nice, list.size);
-
-  printf("HEAD %d TAIL %p:%d\n", 
-         *(u32int*)(list.head->next->next->prev->container), 
-         (list.tail->container), *(u32int*)(list.tail->container));*/
+  printf("----------------- VECTOR\n");
 
   return 0;
 }
-
