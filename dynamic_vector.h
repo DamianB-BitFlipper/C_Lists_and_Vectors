@@ -31,13 +31,27 @@
 
 /*push back an array*/
 #define VECTOR_PUSH_BACK_ARRAY(vector, array, n_elements)               \
-  vector.push_back_array(&vector, &array, n_elements, sizeof(*array)) 
+  vector.push_back_array(&vector, array, n_elements, sizeof(*array)) 
 
 /*pop back*/
 #define VECTOR_POP_BACK(vector) vector.pop_back(&vector)
 
 /*at*/
 #define VECTOR_AT(vector, index, out) vector.at(&vector, index, &out, sizeof(out))
+
+/*insert*/
+#define VECTOR_INSERT(vector, index, elem) vector.insert(&vector, index, &elem, sizeof(elem))
+#define VECTOR_INSERT_ARRAY(vector, index, array, n_elements)   \
+  vector.insert(&vector, index, array, n_elements * sizeof(*array))
+
+/*erase*/
+#define VECTOR_ERASE(vector, start, end) vector.erase(&vector, start, end)
+
+/*swap*/
+#define VECTOR_SWAP(vOne, vTwo) vOne.swap(&vOne, &vTwo)
+
+/*clear*/
+#define VECTOR_CLEAR(vector) vector.clear(&vector)
 
 /*free all*/
 #define VECTOR_FREE_ALL(vector) vector.free_all(&vector)
@@ -60,6 +74,7 @@ typedef struct vector_s
   u32int size;      //the number of elements in this vector
 
   //Internal function pointers
+  bool (*__realloc_if_necessary__)(struct vector_s *self, size_t data_sz);
   bool (*__push_back_data__)(struct vector_s *self, void *data, size_t data_sz);
 
   //Function pointers
@@ -71,6 +86,10 @@ typedef struct vector_s
   bool (*push_back_array)(struct vector_s *self, void *array, u32int n_elements, size_t elem_sz);
   bool (*pop_back)(struct vector_s *self);
   bool (*at)(struct vector_s *self, u32int index, void *ret, size_t ret_sz);
+  bool (*insert)(struct vector_s *self, u32int index, void *elem, size_t elem_sz);
+  bool (*erase)(struct vector_s *self, u32int start, u32int end);
+  bool (*swap)(struct vector_s *one, struct vector_s *two);
+  bool (*clear)(struct vector_s *self);
   bool (*free_all)(struct vector_s *self);
 } vector_t;
 

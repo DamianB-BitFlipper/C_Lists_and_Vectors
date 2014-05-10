@@ -58,7 +58,7 @@ s32int main()
   vector_t vec;
   VECTOR_INIT(vec, u32int);
 
-  VECTOR_PUSH_BACK_ARRAY(vec, arr, 10);
+  VECTOR_PUSH_BACK_ARRAY(vec, arr + 1, 9);
 
   VECTOR_POP_BACK(vec);
 
@@ -68,10 +68,22 @@ s32int main()
   VECTOR_BACK(vec, tmp);
   printf("BACK %d\n\n", tmp);
 
-  VECTOR_RESIZE(vec, 3);
+  VECTOR_RESIZE(vec, 5);
+  VECTOR_INSERT(vec, 5, *(arr + 9));
+  VECTOR_INSERT_ARRAY(vec, 6, arr + 4, 3);
+
+  VECTOR_ERASE(vec, 1, 3);
+
+  vector_t vec2;
+  VECTOR_INIT(vec2, u32int);
+  VECTOR_PUSH_BACK_ARRAY(vec2, arr, 5);
+  VECTOR_SWAP(vec, vec2);
 
   u32int var;
   VECTOR_FOREACH(var, vec)
+    printf("DATA %d\n", var);
+  printf("--------------\n");
+  VECTOR_FOREACH(var, vec2)
     printf("DATA %d\n", var);
 
   printf("Size %zu %zuKB \t n_elements %d\n", vec.alloc_sz, vec.alloc_sz / 1024, vec.size);
