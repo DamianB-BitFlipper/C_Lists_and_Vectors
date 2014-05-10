@@ -17,7 +17,7 @@ s32int main()
   u32int arr[10] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
   //Test variables
 
-  LIST_INSERT_ARRAY(list, 0, arr + 3, 4);
+  LIST_INSERT_ARRAY(list, 0, arr + 1, 4);
 
   LIST_PUSH_BACK(list, test);
   LIST_PUSH_BACK(list, mid);

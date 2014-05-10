@@ -45,6 +45,17 @@ bool static_type_list_insert(list_t *self, u32int index, void *elem, size_t size
   return list_insert(self, index, elem, size);
 }
 
+bool static_type_list_insert_array(list_t *self, u32int index, void *array, size_t elem_sz, u32int n_elements)
+{
+  if(!self || !self->reserve)
+    return false;
+
+  assert(((static_list_reserve_t*)self->reserve)->element_sz == elem_sz &&
+    "Cannot insert an element that does not have a size equal to the others in the list");
+  
+  return list_insert_array(self, index, array, elem_sz, n_elements);
+}
+
 bool static_type_list_clone(list_t *self, list_t *ret)
 {
   //a bunch of sanity checks
@@ -89,6 +100,7 @@ void init_static_type_list_empty_head(list_t *list, size_t elem_sz)
   list->push_front = static_type_list_push_front;
   list->push_back  = static_type_list_push_back;
   list->insert     = static_type_list_insert;
+  list->insert_array = static_type_list_insert_array;
   list->clone      = static_type_list_clone;
 
   return;

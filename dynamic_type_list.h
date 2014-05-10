@@ -29,11 +29,27 @@
 /*push front*/
 #define LIST_PUSH_FRONT(list, var) list.push_front(&list, &var, sizeof(var))
 
+/*emplace front*/
+#define LIST_EMPLACE_FRONT(list, type, expr)    \
+  do                                            \
+  {                                             \
+    type __tmp__ = expr;                        \
+    LIST_PUSH_FRONT(list, __tmp__);             \
+  }while(0)                                     \
+
 /*pop front*/
 #define LIST_POP_FRONT(list) list.pop_front(&list)
 
 /*push back*/
 #define LIST_PUSH_BACK(list, var) list.push_back(&list, &var, sizeof(var))
+
+/*emplace back*/
+#define LIST_EMPLACE_BACK(list, type, expr)     \
+  do                                            \
+  {                                             \
+    type __tmp__ = expr;                        \
+    LIST_PUSH_BACK(list, __tmp__);              \
+  }while(0)                                     \
 
 /*pop back*/
 #define LIST_POP_BACK(list) list.pop_back(&list)
@@ -54,7 +70,15 @@
 
 /*insert array*/
 #define LIST_INSERT_ARRAY(list, index, array, n_elements)           \
-  list.insert_array(&list, index, array, sizeof(*array), n_elements)
+  list.insert_array(&list, index, array, sizeof(*(array)), n_elements)
+
+/*emplace*/
+#define LIST_EMPLACE(list, index, type, expr)   \
+  do                                            \
+  {                                             \
+    type __tmp__ = expr;                        \
+    LIST_INSERT(list, index, __tmp__);          \
+  }while(0)                                     \
 
 /*clone list*/
 #define LIST_CLONE(list, clone_list) list.clone(&list, &copy_list);
@@ -167,6 +191,8 @@ bool list_pop_back(list_t *self);
 bool list_at(list_t *self, u32int index, void *outData, size_t *outSize, size_t actualContainerSize);
 
 bool list_insert(list_t *self, u32int index, void *elem, size_t size);
+
+bool list_insert_array(list_t *self, u32int index, void *array, size_t elem_sz, u32int n_elements);
 
 bool list_clone(list_t *self, list_t *ret);
 

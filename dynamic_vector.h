@@ -34,7 +34,15 @@
 
 /*push back an array*/
 #define VECTOR_PUSH_BACK_ARRAY(vector, array, n_elements)               \
-  vector.push_back_array(&vector, array, n_elements, sizeof(*array)) 
+  vector.push_back_array(&vector, array, n_elements, sizeof(*(array))) 
+
+/*emplace back*/
+#define VECTOR_EMPLACE_BACK(vector, type, expr) \
+  do                                            \
+  {                                             \
+    type __tmp__ = expr;                        \
+    VECTOR_PUSH_BACK(vector, __tmp__);             \
+  }while(0)                                     \
 
 /*pop back*/
 #define VECTOR_POP_BACK(vector) vector.pop_back(&vector)
@@ -48,7 +56,15 @@
 /*insert*/
 #define VECTOR_INSERT(vector, index, elem) vector.insert(&vector, index, &elem, sizeof(elem))
 #define VECTOR_INSERT_ARRAY(vector, index, array, n_elements)   \
-  vector.insert(&vector, index, array, n_elements * sizeof(*array))
+  vector.insert(&vector, index, array, n_elements * sizeof(*(array)))
+
+/*emplace*/
+#define VECTOR_EMPLACE(vector, index, type, expr)   \
+  do                                                \
+  {                                                 \
+    type __tmp__ = expr;                            \
+    VECTOR_INSERT(vector, index, __tmp__);            \
+  }while(0)                                         \
 
 /*erase*/
 #define VECTOR_ERASE(vector, start, end) vector.erase(&vector, start, end)
