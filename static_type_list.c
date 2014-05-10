@@ -72,9 +72,8 @@ void init_static_type_list_empty_head(list_t *list, size_t elem_sz)
   if(!list)
     return; //error
 
-  //all values to be set to 0
-  list->head = list->tail = 0;
-  list->size = 0;
+  //call the dynamic type list's (parent class)'s initializator
+  init_list_empty_head(list);
 
   //set the reserve properly, since element_sz is a constant member
   // it has to be initilized like so and then copied over to avoid the
@@ -85,20 +84,12 @@ void init_static_type_list_empty_head(list_t *list, size_t elem_sz)
   memcpy(list->reserve, &reserve, sizeof(static_list_reserve_t));
   list->reserve_sz = sizeof(static_list_reserve_t);
 
-  //assign internal list functions not meant to be called by the user
-  // this function is the same for this list type and the dynamic one
-  list->__get_node_at__ = __list_get_node_at__;
-
   //assign corresponding functions
   // only functions that were defined above are needed to be changed
   list->push_front = static_type_list_push_front;
-  list->pop_front  = list_pop_front;
   list->push_back  = static_type_list_push_back;
-  list->pop_back   = list_pop_back;
-  list->at         = list_at;
   list->insert     = static_type_list_insert;
   list->clone      = static_type_list_clone;
-  list->free_all   = list_free_all;
 
   return;
 }

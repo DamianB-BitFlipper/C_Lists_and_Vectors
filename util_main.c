@@ -28,6 +28,13 @@ s32int main()
   LIST_INSERT(list, 1, mid);
 
   u32int foreachTmp;
+  size_t sizer;
+
+  LIST_FRONT(list, foreachTmp);
+  printf("FRONT %d\n", foreachTmp);
+  LIST_BACK_WITH_SIZE(list, foreachTmp, sizer);
+  printf("BACK %d size %zu\n\n", foreachTmp, sizer);
+  
   LIST_FOREACH(foreachTmp, list)
   {
     printf("Test %d\n", foreachTmp);
@@ -46,6 +53,30 @@ s32int main()
   }
 
   printf("----------------- VECTOR\n");
+
+  u32int arr[10] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+  vector_t vec;
+  VECTOR_INIT(vec, u32int);
+
+  VECTOR_PUSH_BACK_ARRAY(vec, arr, 10);
+
+  VECTOR_POP_BACK(vec);
+
+  u32int tmp;
+  VECTOR_FRONT(vec, tmp);
+  printf("FRONT %d\n", tmp);
+  VECTOR_BACK(vec, tmp);
+  printf("BACK %d\n\n", tmp);
+
+  VECTOR_RESIZE(vec, 3);
+
+  u32int var;
+  VECTOR_FOREACH(var, vec)
+    printf("DATA %d\n", var);
+
+  printf("Size %zu %zuKB \t n_elements %d\n", vec.alloc_sz, vec.alloc_sz / 1024, vec.size);
+
+  VECTOR_FREE_ALL(vec);
 
   return 0;
 }

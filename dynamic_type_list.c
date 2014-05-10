@@ -77,7 +77,7 @@ void init_list_node(list_t *master, list_node_t *node, list_node_t *prev,
 list_node_t *__list_get_node_at__(list_t *self, u32int index)
 {
   //Sanity checks
-  if(!self)
+  if(!self || !self->size)
     return false; //error
 
   list_node_t *node;
@@ -112,6 +112,28 @@ list_node_t *__list_get_node_at__(list_t *self, u32int index)
  * External List Functions                     *
  *                                             *
  ***********************************************/
+
+//gets the first element of the list
+bool list_front(list_t *self, void *outData, size_t *outSize, size_t actualContainerSize)
+{
+  if(!self)
+    return false;
+
+  //simply use at on the 0'th element
+  return self->at(self, 0, outData, outSize, actualContainerSize);
+}
+
+//gets the last element of the list
+bool list_back(list_t *self, void *outData, size_t *outSize, size_t actualContainerSize)
+{
+  if(!self)
+    return false;
+
+  //simply use at on the (size - 1)'th element
+  // if the size happened to be 0, (0 - 1) will produce the largest number a 32 bit
+  // integer can hold, which is larger than 0, that will be caught and handled properly internally
+  return self->at(self, self->size - 1, outData, outSize, actualContainerSize);  
+}
 
 //creates a list node with contents *elem and pushes it to the front of the list
 bool list_push_front(list_t *self, void *elem, size_t size)
@@ -219,8 +241,12 @@ bool list_pop_front(list_t *self)
 bool list_pop_back(list_t *self)
 {
   //sanity checks
-  if(!self || !self->tail)
+  if(!self)
     return false;
+
+  //not exactly and error, just nothing to pop
+  if(!self->tail)
+    return true;
 
   list_node_t *node = self->tail;
   
@@ -391,6 +417,8 @@ void init_list_empty_head(list_t *list)
   list->__get_node_at__ = __list_get_node_at__;
 
   //assign corresponding functions
+  list->front      = list_front;
+  list->back       = list_back;
   list->push_front = list_push_front;
   list->pop_front  = list_pop_front;
   list->push_back  = list_push_back;

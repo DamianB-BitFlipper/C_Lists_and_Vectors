@@ -12,6 +12,20 @@
 /*initializes a list*/
 #define LIST_INIT(list) init_list_empty_head(&list);
 
+/*front*/
+//the variable out gets the contents of the node's container
+#define LIST_FRONT(list, out) list.front(&list, &out, 0, sizeof(out))
+
+//same as LIST_FRONT, with the variable size getting the size of the node's data
+#define LIST_FRONT_WITH_SIZE(list, out, size) list.front(&list, &out, &size, sizeof(out))
+
+/*back*/
+//the variable out gets the contents of the node's container
+#define LIST_BACK(list, out) list.back(&list, &out, 0, sizeof(out))
+
+//same as LIST_BACK, with the variable size getting the size of the node's data
+#define LIST_BACK_WITH_SIZE(list, out, size) list.back(&list, &out, &size, sizeof(out))
+
 /*push front*/
 #define LIST_PUSH_FRONT(list, var) list.push_front(&list, &var, sizeof(var))
 
@@ -41,29 +55,25 @@
 #define LIST_FREE_ALL(list) list.free_all(&list)
 
 /*foreach
- * In struct {...} s:
- *            __typeof__(var) *x is a pointer with the type of var
- *                                  that is initialized with the address of var
- *            list_node_t *node is a pointer to the node in the list
+ * Initialization:
+ *            list_node_t *__node__ is a pointer to the node in the list
  *                                  that is initialized with the list's head
  *                                  every time the for loop loops, its value is updated
  *                                  with the next node in the list
  * Condition:
- *            while, s.node (the node being iterated) is not NULL, ie) a valid node
- *            and, the extract_container() of the node into the pointer s.x has not failed
+ *            while, __node__ (the node being iterated) is not NULL, ie) a valid node
+ *            and, the extract_container() of the node into the pointer &var has not failed
  *                     this extract_container function is called every time the condition is executed
- *                     and the value of s.x (*s.x) attains the value of the value container of that node
- *                     As *s.x attains a value, that indirecly makes var attain the same value as
- *                     they were initilized with the same address
+ *                     and the value of &var attains the value of the container of that node
  * Iteration:
  *            The next node is assigned the pointer of the current node's next pointer
  *
  * !!! Declaration of var happens outside of LIST_FOREACH loop !!!
  * */
 #define LIST_FOREACH(var, list)                                         \
-  for(struct { __typeof__(var) *x; list_node_t *node; } s = {&var, list.head}; \
-      s.node != NULL && (s.node->extract_container(s.node, s.x, 0, sizeof(var))); \
-      s.node = s.node->next)
+  for(list_node_t *__node__ = list.head;                                \
+      __node__ != NULL && (__node__->extract_container(__node__, &var, 0, sizeof(var))); \
+      __node__ = __node__->next)
 
 /*********List macros*********/
 
@@ -84,11 +94,12 @@ typedef struct list_node_s
   size_t reserve_sz;
   
   //internal list functions
-  struct list_node_s *(*__clone_node__)(struct list_node_s*, struct list_s*, 
-                                        struct list_node_s*, struct list_node_s*);
+  struct list_node_s *(*__clone_node__)(struct list_node_s *self, struct list_s *master, 
+                                        struct list_node_s *prev, struct list_node_s *next);
 
   //function pointers
-  bool (*extract_container)(struct list_node_s*, void*, size_t*, size_t);
+  bool (*extract_container)(struct list_node_s *node, void *outData, 
+                            size_t *outSize, size_t actualContainerSize);
 
 } list_node_t;
 
@@ -107,14 +118,16 @@ typedef struct list_s
   list_node_t *(*__get_node_at__)(struct list_s*, u32int);
 
   //function pointers
-  bool (*push_front)(struct list_s*, void*, size_t);
-  bool (*pop_front)(struct list_s*);
-  bool (*push_back)(struct list_s*, void*, size_t);
-  bool (*pop_back)(struct list_s*);
-  bool (*at)(struct list_s*, u32int, void*, size_t*, size_t);
-  bool (*insert)(struct list_s*, u32int, void*, size_t);
-  bool (*clone)(struct list_s*, struct list_s*);
-  bool (*free_all)(struct list_s*);
+  bool (*front)(struct list_s *self, void *outData, size_t *outSize, size_t actualContainerSize);
+  bool (*back)(struct list_s *self, void *outData, size_t *outSize, size_t actualContainerSize);
+  bool (*push_front)(struct list_s *self, void *elem, size_t size);
+  bool (*pop_front)(struct list_s *self);
+  bool (*push_back)(struct list_s *self, void *elem, size_t size);
+  bool (*pop_back)(struct list_s *self);
+  bool (*at)(struct list_s *self, u32int index, void *outData, size_t *outSize, size_t actualContainerSize);
+  bool (*insert)(struct list_s *self, u32int index, void *elem, size_t size);
+  bool (*clone)(struct list_s *self, struct list_s *ret);
+  bool (*free_all)(struct list_s *self);
 } list_t;
 
 //List node function declarations
