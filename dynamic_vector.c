@@ -192,6 +192,7 @@ bool vector_pop_back(vector_t *self)
 }
 
 //elem will be inserted at index and all elements after it will be pushed back
+// elem can also be an array with elem_sz being the size of the array in bytes
 bool vector_insert(vector_t *self, u32int index, void *elem, size_t elem_sz)
 {
   if(!self || !self->data || !elem || index > self->size)

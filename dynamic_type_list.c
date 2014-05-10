@@ -310,7 +310,7 @@ void *list_get(list_t *self, u32int index, size_t *outSize)
 bool list_insert(list_t *self, u32int index, void *elem, size_t size)
 {
   //sanity checks
-  if(!elem || ! size || !self || index > self->size)
+  if(!elem || !self || !size || index > self->size)
     return false; //error
 
   //handle the end cases differently
@@ -347,6 +347,51 @@ bool list_insert(list_t *self, u32int index, void *elem, size_t size)
   //sucess!
   return true;
 
+}
+
+//inserts n_elements into the list from the input array at the index 'index'
+bool list_insert_array(list_t *self, u32int index, void *array, size_t elem_sz, u32int n_elements)
+{
+  //sanity checks
+  if(!self || !array || !elem_sz || index > self->size)
+    return false; //error
+
+  //if n_elements is 0, not an errer, just an easy job
+  if(!n_elements)
+    return true;
+
+  //handle the end cases differently
+  // use push front/back if the index is the beginning/end
+  if(!index) //index is the first element
+  {
+    //push to the front the first element in the array and insert the rest of the array starting at index 1
+    if(!self->push_front(self, array, elem_sz))
+      return false;
+
+    //insert the rest of the array at index 1 with n_elements - 1 as the size since the first element
+    // was already pushed
+    return self->insert_array(self, 1, array + elem_sz, elem_sz, n_elements - 1);
+  }else if(index == self->size) //index is past the last element
+  {
+    //push to the back the last element in the array and insert the rest of the 
+    // array starting at index self->size - 1    
+    if(!self->push_back(self, array + (n_elements - 1) * elem_sz, elem_sz))
+      return false;
+
+    //insert the rest of the array at index self->size - 1 with n_elements - 1 as the size since the 
+    // last element was already pushed
+    return self->insert_array(self, self->size - 1, array, elem_sz, n_elements - 1);
+  }
+  
+  //loop and insert all of the other elements
+  u32int i;
+  for(i = 0; i < n_elements; i++)
+  {
+    if(!self->insert(self, index + i, array + i * elem_sz, elem_sz))
+       return false;
+  }
+
+  return true;
 }
 
 //given a list self that contains nodes and a list ret that is initialized properly
@@ -443,6 +488,7 @@ void init_list_empty_head(list_t *list)
   list->at         = list_at;
   list->get        = list_get;
   list->insert     = list_insert;
+  list->insert_array = list_insert_array;
   list->clone      = list_clone;
   list->free_all   = list_free_all;
 

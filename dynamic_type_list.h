@@ -52,6 +52,10 @@
 /*insert*/
 #define LIST_INSERT(list, index, var) list.insert(&list, index, &var, sizeof(var))
 
+/*insert array*/
+#define LIST_INSERT_ARRAY(list, index, array, n_elements)           \
+  list.insert_array(&list, index, array, sizeof(*array), n_elements)
+
 /*clone list*/
 #define LIST_CLONE(list, clone_list) list.clone(&list, &copy_list);
 
@@ -131,6 +135,7 @@ typedef struct list_s
   bool (*at)(struct list_s *self, u32int index, void *outData, size_t *outSize, size_t actualContainerSize);
   void *(*get)(struct list_s *self, u32int index, size_t *outSize);
   bool (*insert)(struct list_s *self, u32int index, void *elem, size_t size);
+  bool (*insert_array)(struct list_s *self, u32int index, void *array, size_t elem_sz, u32int n_elements);
   bool (*clone)(struct list_s *self, struct list_s *ret);
   bool (*free_all)(struct list_s *self);
 } list_t;

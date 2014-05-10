@@ -14,7 +14,10 @@ s32int main()
 
   //Test variables
   u32int test = 100, mid = 200, end = 300;
+  u32int arr[10] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
   //Test variables
+
+  LIST_INSERT_ARRAY(list, 0, arr + 3, 4);
 
   LIST_PUSH_BACK(list, test);
   LIST_PUSH_BACK(list, mid);
@@ -58,7 +61,6 @@ s32int main()
 
   printf("----------------- VECTOR\n");
 
-  u32int arr[10] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
   vector_t vec;
   VECTOR_INIT(vec, u32int);
 
