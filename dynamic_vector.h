@@ -20,6 +20,9 @@
 /*reserve*/
 #define VECTOR_RESERVE(vector, n) vector.reserve(&vector, n)
 
+/*shrink to fit*/
+#define VECTOR_SHRINK_TO_FIT(vector) vector.shrink_to_fit(&vector)
+
 /*front*/
 #define VECTOR_FRONT(vector, out) vector.front(&vector, &out, sizeof(out))
 
@@ -38,6 +41,9 @@
 
 /*at*/
 #define VECTOR_AT(vector, index, out) vector.at(&vector, index, &out, sizeof(out))
+
+/*get*/
+#define VECTOR_GET(vector, index) vector.get(&vector, index)
 
 /*insert*/
 #define VECTOR_INSERT(vector, index, elem) vector.insert(&vector, index, &elem, sizeof(elem))
@@ -80,12 +86,14 @@ typedef struct vector_s
   //Function pointers
   bool (*resize)(struct vector_s *self, size_t n);
   bool (*reserve)(struct vector_s *self, size_t n);
+  bool (*shrink_to_fit)(struct vector_s *self);
   bool (*front)(struct vector_s *self, void *ret, size_t ret_sz);
   bool (*back)(struct vector_s *self, void *ret, size_t ret_sz);
   bool (*push_back)(struct vector_s *self, void *elem, size_t elem_sz);
   bool (*push_back_array)(struct vector_s *self, void *array, u32int n_elements, size_t elem_sz);
   bool (*pop_back)(struct vector_s *self);
   bool (*at)(struct vector_s *self, u32int index, void *ret, size_t ret_sz);
+  void *(*get)(struct vector_s *self, u32int index);
   bool (*insert)(struct vector_s *self, u32int index, void *elem, size_t elem_sz);
   bool (*erase)(struct vector_s *self, u32int start, u32int end);
   bool (*swap)(struct vector_s *one, struct vector_s *two);

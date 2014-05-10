@@ -45,6 +45,10 @@
 //same as LIST_AT, with the variable size getting the size of the node's data
 #define LIST_AT_WITH_SIZE(list, index, out, size) list.at(&list, index, &out, &size, sizeof(out)) 
 
+/*get*/
+#define LIST_GET(list, index) list.get(&list, index, 0)
+#define LIST_GET_WITH_SIZE(list, index, size) list.get(&list, index, &size)
+
 /*insert*/
 #define LIST_INSERT(list, index, var) list.insert(&list, index, &var, sizeof(var))
 
@@ -125,6 +129,7 @@ typedef struct list_s
   bool (*push_back)(struct list_s *self, void *elem, size_t size);
   bool (*pop_back)(struct list_s *self);
   bool (*at)(struct list_s *self, u32int index, void *outData, size_t *outSize, size_t actualContainerSize);
+  void *(*get)(struct list_s *self, u32int index, size_t *outSize);
   bool (*insert)(struct list_s *self, u32int index, void *elem, size_t size);
   bool (*clone)(struct list_s *self, struct list_s *ret);
   bool (*free_all)(struct list_s *self);

@@ -94,6 +94,17 @@ bool vector_reserve(vector_t *self, size_t n)
     return self->resize(self, n);
 }
 
+//shrinks the container size to only fit the elements in the vector
+// frees unused memory
+bool vector_shrink_to_fit(vector_t *self)
+{
+  if(!self)
+    return false;
+  
+  self->resize(self, self->size);
+  return true;
+}
+
 //gets the data at an index in the vector
 bool vector_at(vector_t *self, u32int index, void *ret, size_t ret_sz)
 {
@@ -105,6 +116,16 @@ bool vector_at(vector_t *self, u32int index, void *ret, size_t ret_sz)
 
   memcpy(ret, self->data + index * self->elem_sz, self->elem_sz);
   return true;
+}
+
+//returns the pointer to the direct memory location of the element at the index 'index'
+void *vector_get(vector_t *self, u32int index)
+{
+  //santiy checks
+  if(!self || !self->data || index >= self->size)
+    return NULL; //error
+
+  return self->data + index * self->elem_sz;
 }
 
 //gets the first element from the vector
@@ -307,12 +328,14 @@ void init_vector_empty(vector_t *vector, size_t elem_sz)
   //assign function pointers
   vector->resize    = vector_resize;
   vector->reserve   = vector_reserve;
+  vector->shrink_to_fit = vector_shrink_to_fit;
   vector->front     = vector_front;
   vector->back      = vector_back;
   vector->push_back = vector_push_back;
   vector->push_back_array = vector_push_back_array;
   vector->pop_back  = vector_pop_back;
   vector->at        = vector_at;
+  vector->get       = vector_get;
   vector->insert    = vector_insert;
   vector->erase     = vector_erase;
   vector->swap      = vector_swap;

@@ -94,7 +94,7 @@ list_node_t *__list_get_node_at__(list_t *self, u32int index)
   }else{ //start from the end
     node = self->tail;
 
-    for(i = self->size - 1; node && i > index; i++, node = node->prev);
+    for(i = self->size - 1; node && i > index; i--, node = node->prev);
   }
 
   return node;
@@ -289,6 +289,23 @@ bool list_at(list_t *self, u32int index, void *outData, size_t *outSize, size_t 
   return node->extract_container(node, outData, outSize, actualContainerSize);
 }
 
+void *list_get(list_t *self, u32int index, size_t *outSize)
+{
+  //santiy checks
+  if(!self || index >= self->size)
+    return NULL; //error
+
+  list_node_t *node = self->__get_node_at__(self, index);
+
+  if(!node)
+    return NULL; //error
+
+  if(outSize)
+    *outSize = node->container_sz;
+
+  return node->container;
+}
+
 //inserts element 'void *elem' with size 'size_t size' at index 'u32int index' in self
 bool list_insert(list_t *self, u32int index, void *elem, size_t size)
 {
@@ -424,6 +441,7 @@ void init_list_empty_head(list_t *list)
   list->push_back  = list_push_back;
   list->pop_back   = list_pop_back;
   list->at         = list_at;
+  list->get        = list_get;
   list->insert     = list_insert;
   list->clone      = list_clone;
   list->free_all   = list_free_all;
