@@ -1,6 +1,0 @@
-
-#include <stdlib.h> //malloc, ...
-#include <string.h> //memcpy, ...
-
-#include "utils.h"  //special types, ie) u32int, u8int
-#include "list_implementation.h"  //list definitions
