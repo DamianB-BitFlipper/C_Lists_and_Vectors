@@ -5,12 +5,15 @@
 #include "static_type_list.h" //list of static type nodes
 #include "dynamic_vector.h"   //dynamic size vector (array)
 
-#define USE_UI
+//Compile with:
+// gcc -o example example.c dynamic_type_list.c static_type_list.c dynamic_vector.c utils.c -O3 -Wall -std=c99
+
+//~ #define USE_UI
 
 //default values for non-ui mode
-#define BENCHMARK_SZ  10000000 //default size for list/vector if ui mode is off
-#define BENCHMARK_DEMO 'V'   //default benchmark type
-#define BENCHMARK_PRINT false //wheather it will print the elements in the list/vector
+#define BENCHMARK_SZ    10000000 //default size for list/vector if ui mode is off
+#define BENCHMARK_DEMO  'V'      //default benchmark type
+#define BENCHMARK_PRINT false    //wheather it will print the elements in the list/vector
 
 s32int main()
 {
@@ -81,7 +84,7 @@ s32int main()
       VECTOR_INIT(vec, uint64);
 
       //reserve space for i elements for efficiency
-      VECTOR_RESERVE(vec, i);
+      VECTOR_RESERVE(vec, size);
       
       for(i = 1; i < size + 1; i++)
         VECTOR_EMPLACE_BACK(vec, uint64, i * i); //emplace back all squares of i
