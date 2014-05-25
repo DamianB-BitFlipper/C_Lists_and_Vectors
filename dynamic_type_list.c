@@ -213,15 +213,26 @@ bool list_push_back(list_t *self, void *elem, size_t size)
 bool list_pop_front(list_t *self)
 {
   //sanity checks
-  if(!self || !self->tail)
+  if(!self)
+    return false;
+
+  //not exactly and error, just nothing to pop
+  if(!self->head && !self->tail)
+    return true;
+
+  //these are errors
+  if((!self->head && self->tail) || (self->head && !self->tail))
     return false;
 
   list_node_t *node = self->head;
   
   //set the head now to the node's next
   self->head = node->next;
-  //the head's prev has to be cleared
-  self->head->prev = NULL;
+
+  //if the head exists
+  // the head may not exists if the list was of 1 element and node->next was NULL
+  if(self->head)
+    self->head->prev = NULL; //the head's prev has to be cleared
 
   //decrement the size
   self->size--;
@@ -245,15 +256,23 @@ bool list_pop_back(list_t *self)
     return false;
 
   //not exactly and error, just nothing to pop
-  if(!self->tail)
+  if(!self->head && !self->tail)
     return true;
+
+  //these are errors
+  if((!self->head && self->tail) || (self->head && !self->tail))
+    return false;
 
   list_node_t *node = self->tail;
   
   //set the tail now to the node's prev
   self->tail = node->prev;
-  //the tail's next has to be cleared
-  self->tail->next = NULL;
+
+  //if the tail exists
+  // the tail may not exists if the list was of 1 element and node->prev was NULL
+  if(self->tail)
+    //the tail's next has to be cleared
+    self->tail->next = NULL;
 
   //decrement the size
   self->size--;
