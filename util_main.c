@@ -5,7 +5,8 @@
 #include "static_type_list.h"  //static list definitions
 #include "dynamic_vector.h"  //dynamic vector definitions
 
-//compile: gcc -o list_implementation dynamic_type_list.c static_type_list.c util_main.c utils.c -O3 -Wall -std=c99
+//compile:
+// gcc -o list_implementation dynamic_type_list.c static_type_list.c dynamic_vector.c util_main.c utils.c -O3 -Wall -std=c99
 
 s32int main()
 {
@@ -37,6 +38,8 @@ s32int main()
   printf("FRONT %d\n", foreachTmp);
   LIST_BACK_WITH_SIZE(list, foreachTmp, sizer);
   printf("BACK %d size %zu\n\n", foreachTmp, sizer);
+
+  LIST_ERASE(list, 0);
   
   LIST_FOREACH(foreachTmp, list)
   {

@@ -14,20 +14,20 @@
 
 /*front*/
 //the variable out gets the contents of the node's container
-#define LIST_FRONT(list, out) list.front(&list, &out, 0, sizeof(out))
+#define LIST_FRONT(list, out) (list).front(&list, &out, 0, sizeof(out))
 
 //same as LIST_FRONT, with the variable size getting the size of the node's data
-#define LIST_FRONT_WITH_SIZE(list, out, size) list.front(&list, &out, &size, sizeof(out))
+#define LIST_FRONT_WITH_SIZE(list, out, size) (list).front(&list, &out, &size, sizeof(out))
 
 /*back*/
 //the variable out gets the contents of the node's container
-#define LIST_BACK(list, out) list.back(&list, &out, 0, sizeof(out))
+#define LIST_BACK(list, out) (list).back(&list, &out, 0, sizeof(out))
 
 //same as LIST_BACK, with the variable size getting the size of the node's data
-#define LIST_BACK_WITH_SIZE(list, out, size) list.back(&list, &out, &size, sizeof(out))
+#define LIST_BACK_WITH_SIZE(list, out, size) (list).back(&list, &out, &size, sizeof(out))
 
 /*push front*/
-#define LIST_PUSH_FRONT(list, var) list.push_front(&list, &var, sizeof(var))
+#define LIST_PUSH_FRONT(list, var) (list).push_front(&list, &var, sizeof(var))
 
 /*emplace front*/
 #define LIST_EMPLACE_FRONT(list, type, expr)    \
@@ -38,10 +38,10 @@
   }while(0)                                     \
 
 /*pop front*/
-#define LIST_POP_FRONT(list) list.pop_front(&list)
+#define LIST_POP_FRONT(list) (list).pop_front(&list)
 
 /*push back*/
-#define LIST_PUSH_BACK(list, var) list.push_back(&list, &var, sizeof(var))
+#define LIST_PUSH_BACK(list, var) (list).push_back(&list, &var, sizeof(var))
 
 /*emplace back*/
 #define LIST_EMPLACE_BACK(list, type, expr)     \
@@ -52,25 +52,28 @@
   }while(0)                                     \
 
 /*pop back*/
-#define LIST_POP_BACK(list) list.pop_back(&list)
+#define LIST_POP_BACK(list) (list).pop_back(&list)
 
 /*at*/
 //the variable out gets the contents of the node's container
-#define LIST_AT(list, index, out) list.at(&list, index, &out, 0, sizeof(out))
+#define LIST_AT(list, index, out) (list).at(&list, index, &out, 0, sizeof(out))
 
 //same as LIST_AT, with the variable size getting the size of the node's data
-#define LIST_AT_WITH_SIZE(list, index, out, size) list.at(&list, index, &out, &size, sizeof(out)) 
+#define LIST_AT_WITH_SIZE(list, index, out, size) (list).at(&list, index, &out, &size, sizeof(out)) 
 
 /*get*/
-#define LIST_GET(list, index) list.get(&list, index, 0)
-#define LIST_GET_WITH_SIZE(list, index, size) list.get(&list, index, &size)
+#define LIST_GET(list, index) (list).get(&list, index, 0)
+#define LIST_GET_WITH_SIZE(list, index, size) (list).get(&list, index, &size)
 
 /*insert*/
-#define LIST_INSERT(list, index, var) list.insert(&list, index, &var, sizeof(var))
+#define LIST_INSERT(list, index, var) (list).insert(&list, index, &var, sizeof(var))
 
 /*insert array*/
 #define LIST_INSERT_ARRAY(list, index, array, n_elements)           \
-  list.insert_array(&list, index, array, sizeof(*(array)), n_elements)
+  (list).insert_array(&list, index, array, sizeof(*(array)), n_elements)
+
+/*erase*/
+#define LIST_ERASE(list, index) (list).erase(&list, index)
 
 /*emplace*/
 #define LIST_EMPLACE(list, index, type, expr)   \
@@ -81,10 +84,10 @@
   }while(0)                                     \
 
 /*clone list*/
-#define LIST_CLONE(list, clone_list) list.clone(&list, &copy_list);
+#define LIST_CLONE(list, clone_list) (list).clone(&list, &copy_list);
 
 /*free all*/
-#define LIST_FREE_ALL(list) list.free_all(&list)
+#define LIST_FREE_ALL(list) (list).free_all(&list)
 
 /*foreach
  * Initialization:
@@ -103,7 +106,7 @@
  * !!! Declaration of var happens outside of LIST_FOREACH loop !!!
  * */
 #define LIST_FOREACH(var, list)                                         \
-  for(list_node_t *__node__ = list.head;                                \
+  for(list_node_t *__node__ = (list).head;                                \
       __node__ != NULL && (__node__->extract_container(__node__, &var, 0, sizeof(var))); \
       __node__ = __node__->next)
 
@@ -160,6 +163,7 @@ typedef struct list_s
   void *(*get)(struct list_s *self, u32int index, size_t *outSize);
   bool (*insert)(struct list_s *self, u32int index, void *elem, size_t size);
   bool (*insert_array)(struct list_s *self, u32int index, void *array, size_t elem_sz, u32int n_elements);
+  bool (*erase)(struct list_s *self, u32int index);
   bool (*clone)(struct list_s *self, struct list_s *ret);
   bool (*free_all)(struct list_s *self);
 } list_t;

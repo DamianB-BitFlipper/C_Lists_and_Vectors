@@ -15,26 +15,26 @@
 #define VECTOR_INIT(vector, type) init_vector_empty(&vector, sizeof(type))
 
 /*resize*/
-#define VECTOR_RESIZE(vector, n) vector.resize(&vector, n)
+#define VECTOR_RESIZE(vector, n) (vector).resize(&vector, n)
 
 /*reserve*/
-#define VECTOR_RESERVE(vector, n) vector.reserve(&vector, n)
+#define VECTOR_RESERVE(vector, n) (vector).reserve(&vector, n)
 
 /*shrink to fit*/
-#define VECTOR_SHRINK_TO_FIT(vector) vector.shrink_to_fit(&vector)
+#define VECTOR_SHRINK_TO_FIT(vector) (vector).shrink_to_fit(&vector)
 
 /*front*/
-#define VECTOR_FRONT(vector, out) vector.front(&vector, &out, sizeof(out))
+#define VECTOR_FRONT(vector, out) (vector).front(&vector, &out, sizeof(out))
 
 /*back*/
-#define VECTOR_BACK(vector, out) vector.back(&vector, &out, sizeof(out))
+#define VECTOR_BACK(vector, out) (vector).back(&vector, &out, sizeof(out))
 
 /*push back*/
-#define VECTOR_PUSH_BACK(vector, elem) vector.push_back(&vector, &elem, sizeof(elem))
+#define VECTOR_PUSH_BACK(vector, elem) (vector).push_back(&vector, &elem, sizeof(elem))
 
 /*push back an array*/
 #define VECTOR_PUSH_BACK_ARRAY(vector, array, n_elements)               \
-  vector.push_back_array(&vector, array, n_elements, sizeof(*(array))) 
+  (vector).push_back_array(&vector, array, n_elements, sizeof(*(array))) 
 
 /*emplace back*/
 #define VECTOR_EMPLACE_BACK(vector, type, expr) \
@@ -45,18 +45,18 @@
   }while(0)                                     \
 
 /*pop back*/
-#define VECTOR_POP_BACK(vector) vector.pop_back(&vector)
+#define VECTOR_POP_BACK(vector) (vector).pop_back(&vector)
 
 /*at*/
-#define VECTOR_AT(vector, index, out) vector.at(&vector, index, &out, sizeof(out))
+#define VECTOR_AT(vector, index, out) (vector).at(&vector, index, &out, sizeof(out))
 
 /*get*/
-#define VECTOR_GET(vector, index) vector.get(&vector, index)
+#define VECTOR_GET(vector, index) (vector).get(&vector, index)
 
 /*insert*/
-#define VECTOR_INSERT(vector, index, elem) vector.insert(&vector, index, &elem, sizeof(elem))
+#define VECTOR_INSERT(vector, index, elem) (vector).insert(&vector, index, &elem, sizeof(elem))
 #define VECTOR_INSERT_ARRAY(vector, index, array, n_elements)   \
-  vector.insert(&vector, index, array, n_elements * sizeof(*(array)))
+  (vector).insert(&vector, index, array, n_elements * sizeof(*(array)))
 
 /*emplace*/
 #define VECTOR_EMPLACE(vector, index, type, expr)   \
@@ -67,21 +67,21 @@
   }while(0)                                         \
 
 /*erase*/
-#define VECTOR_ERASE(vector, start, end) vector.erase(&vector, start, end)
+#define VECTOR_ERASE(vector, start, end) (vector).erase(&vector, start, end)
 
 /*swap*/
 #define VECTOR_SWAP(vOne, vTwo) vOne.swap(&vOne, &vTwo)
 
 /*clear*/
-#define VECTOR_CLEAR(vector) vector.clear(&vector)
+#define VECTOR_CLEAR(vector) (vector).clear(&vector)
 
 /*free all*/
-#define VECTOR_FREE_ALL(vector) vector.free_all(&vector)
+#define VECTOR_FREE_ALL(vector) (vector).free_all(&vector)
 
 /*foreach loop, see dynamic type list for more detail on explanation*/
 #define VECTOR_FOREACH(var, vector)                                     \
   for(u32int __index__ = 0;                                             \
-      __index__ < vector.size && vector.at(&vector, __index__, &var, sizeof(var)); \
+      __index__ < (vector).size && (vector).at(&vector, __index__, &var, sizeof(var)); \
       __index__++)
 
 /*********Vector macros*********/

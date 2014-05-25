@@ -394,6 +394,40 @@ bool list_insert_array(list_t *self, u32int index, void *array, size_t elem_sz, 
   return true;
 }
 
+//deletes the node at the location index
+bool list_erase(list_t *self, u32int index)
+{
+  if(!self || index >= self->size)
+    return false;
+
+  //special cases
+  // if index == 0, pop front
+  // if index == self->size - 1, pop back
+  if(!index)
+    return self->pop_front(self);
+  else if(index == self->size - 1)
+    return self->pop_back(self);
+
+  list_node_t *node = self->__get_node_at__(self, index);
+
+  //sanity
+  if(!node)
+    return false;
+  
+  list_node_t *prev = node->prev, *next = node->next;
+  
+  //assign the prev's next and the next's prev
+  prev->next = next;
+  next->prev = prev;
+
+  //free the container and node
+  free(node->container);
+  free(node);
+
+  //sucess!
+  return true;
+}
+
 //given a list self that contains nodes and a list ret that is initialized properly
 // copies every node and respective container from self and links it in ret
 bool list_clone(list_t *self, list_t *ret)
@@ -489,6 +523,7 @@ void init_list_empty_head(list_t *list)
   list->get        = list_get;
   list->insert     = list_insert;
   list->insert_array = list_insert_array;
+  list->erase      = list_erase;
   list->clone      = list_clone;
   list->free_all   = list_free_all;
 
